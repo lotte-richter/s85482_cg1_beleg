@@ -6,6 +6,7 @@
 #include <glew.h>
 #include <freeglut.h>
 #include <FreeImage.h>
+#include <vector>
 using namespace glm;
 
 GLuint loadShaders(const char* vertexFilePath,
@@ -15,11 +16,11 @@ GLuint loadShaders(const char* vertexFilePath,
     const char* tessevaluationFilePath,
     const char* computeFilePath);
 GLint height = 100, width = 100;
-enum VAO_IDs { VAOCheckerboard, VAOBoard, NumVAOs };
-enum Buffer_IDs { ArrayBufferCheckerboard, ArrayBufferBoard, NumBuffers };
-enum Texture_IDs { TextureCheckerboard, TextureBoard, NumTextures };
+enum VAO_IDs { VAOCheckerboard, VAOBoard, VAOPieces, NumVAOs };
+enum Buffer_IDs { ArrayBufferCheckerboard, ArrayBufferBoard, ArrayBufferPieces, NumBuffers };
+enum Texture_IDs { TextureCheckerboard, TextureBoard, TextureMetal, NumTextures };
 enum Object_IDs { BOARD_ID, CHECKERBOARD_ID, NUM_OBJECTS };
-enum Attrib_IDs { vPosition, in_tex_coord };
+enum Attrib_IDs { vPosition, in_tex_coord, vNormal };
 
 GLuint VAOs[NumVAOs];
 GLuint Buffers[NumBuffers];
@@ -40,7 +41,7 @@ bool isBlending = true, isTiefenPuffer = true, isStencil = false, isCullFace = f
 
 void generateCheckerboard() {
     // 8x8 Schachbrettmuster (RGBA)
-    static const GLubyte checkerboard[8 * 8 * 4] = {        
+    /*static const GLubyte checkerboard[8 * 8 * 4] = {        
         0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
         0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
         
@@ -64,6 +65,33 @@ void generateCheckerboard() {
         
         0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
         0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF
+    };*/
+
+    static const GLubyte checkerboard[8 * 8 * 4] = {
+        // Zeile 1: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        // Zeile 2: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        // Zeile 3: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        // Zeile 4: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        // Zeile 5: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        // Zeile 6: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        // Zeile 7: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
+        // Zeile 8: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
+        0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF
     };
 
     // Textur erstellen und binden
@@ -172,7 +200,60 @@ void drawBoard() {
     }
 }
 
+void generateChessPiece() {
+    // Bauer (einfacher Zylinder)
+    std::vector<GLfloat> vertices;
+
+    const int segments = 32;
+    const float height = 0.7f;
+    const float radius = 0.3f;
+
+    // Zylinder-Mantel mit vec4 Positionen (w=1.0)
+    for (int i = 0; i <= segments; i++) {
+        float angle = 2.0f * PI * i / segments;
+        float x = radius * cos(angle);
+        float z = radius * sin(angle);
+        float nx = cos(angle);
+        float nz = sin(angle);
+
+        // Unten
+        vertices.insert(vertices.end(), { x, 0.0f, z, 1.0f }); 
+        vertices.insert(vertices.end(), { nx, 0.0f, nz }); 
+        vertices.insert(vertices.end(), { (float)i / segments, 0.0f }); 
+
+        // Oben
+        vertices.insert(vertices.end(), { x, height, z, 1.0f });
+        vertices.insert(vertices.end(), { nx, 0.0f, nz }); 
+        vertices.insert(vertices.end(), { (float)i / segments, 1.0f });
+    }
+
+    glBindVertexArray(VAOs[VAOPieces]);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBufferPieces]);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(vPosition);
+    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(4 * sizeof(float)));
+    glEnableVertexAttribArray(in_tex_coord);
+    glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(vNormal);
+}
+
+void drawChessPiece() {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindVertexArray(VAOs[VAOPieces]);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureMetal]);
+    glUniform1i(glGetUniformLocation(program, "texMetal"), 2);
+
+    glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 2 * (32 + 1)); // 32 Segmente + Deckel
+}
+
 // ---- Textures ----
+
 void loadWoodTexture() {
     const char* path = "images/wood.jpg";
 
@@ -197,6 +278,30 @@ void loadWoodTexture() {
     FreeImage_Unload(dib);
 }
 
+void loadMetalTexture() {
+    const char* path = "images/metal.jpg";
+
+    FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(path, 0);
+    FIBITMAP* dib = FreeImage_Load(fif, path, 0);
+    dib = FreeImage_ConvertTo32Bits(dib);
+
+    int width = FreeImage_GetWidth(dib);
+    int height = FreeImage_GetHeight(dib);
+    void* data = FreeImage_GetBits(dib);
+
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureMetal]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+
+    // Textureinstellungen
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    FreeImage_Unload(dib);
+}
+
 void init() {
     program = loadShaders("Programme/beleg.vs", "Programme/beleg.fs", "", "", "", "");
     glUseProgram(program);
@@ -207,9 +312,11 @@ void init() {
     //glEnable(GL_CULL_FACE);
     generateBoard();
     generateCheckerboard();
+    generateChessPiece();
 
     // Load Textures
     loadWoodTexture();
+    loadMetalTexture();
 }
 
 void display() {
@@ -238,16 +345,38 @@ void display() {
     glViewport(0, 0, width, height);
 
     angle -= (0.01 + anglestep);
-    GLuint Location;
-    Location = glGetUniformLocation(program, "ModelViewProjection");
+
+    // Uniform Locations vorab holen
+    GLuint modelLoc = glGetUniformLocation(program, "model");
+    GLuint viewLoc = glGetUniformLocation(program, "view");
+    GLuint projLoc = glGetUniformLocation(program, "projection");
+
     mat4 Projection = perspective(1.0f, 1.0f, 0.1f, 100.f);
     mat4 View = lookAt(vec3(viewpoint[0], viewpoint[1], viewpoint[2]), vec3(0.5, 0.5, 0.5), vec3(0.0, cos(beta - PI * 0.5), 0.0));
     mat4 Model = mat4(1.0f);
     mat4 ModelViewProjection = Projection * View * Model;
-    
-    glUniformMatrix4fv(Location, 1, GL_FALSE, &ModelViewProjection[0][0]);
+
+    // Gemeinsame Matrizen setzen
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &View[0][0]);
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Projection[0][0]);
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+
     drawBoard();
     drawCheckerboard();
+
+    // Bauer auf Position (0,1)
+    Model = mat4(1.0f);
+    Model = translate(Model, vec3(-3.5f + 0, 0.0f, -3.5f + 1));
+    Model = scale(Model, vec3(0.3f, 0.5f, 0.3f));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+    drawChessPiece();
+
+    // Turm auf Position (0,0)
+    Model = mat4(1.0f);
+    Model = translate(Model, vec3(-3.5f + 0, 0.0f, -3.5f + 0));
+    Model = scale(Model, vec3(0.3f, 0.6f, 0.3f));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+    drawChessPiece();
 
     glutSwapBuffers();
 }
