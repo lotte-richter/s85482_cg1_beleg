@@ -108,15 +108,6 @@ void drawCheckerboard() {
 }
 
 void generateBoard() {
-    unsigned char boardTexture[4] = { 0x8B, 0x45, 0x13, 0xFF }; // Braun in RGBA
-
-    glBindTexture(GL_TEXTURE_2D, Textures[TextureBoard]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, boardTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     // Vertex-Daten für den braunen Quader (etwas größer als das Schachbrett)
     static const GLfloat board_data[] = {
         // Oberfläche
@@ -170,7 +161,7 @@ void drawBoard() {
     // Textur binden
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, Textures[TextureBoard]);
-    glUniform1i(glGetUniformLocation(program, "texBoard"), 0);
+    glUniform1i(glGetUniformLocation(program, "texWood"), 0);
 
     // Objekt ID setzen
     glUniform1i(glGetUniformLocation(program, "objectId"), BOARD_ID);
@@ -217,10 +208,8 @@ void init() {
     generateBoard();
     generateCheckerboard();
 
-    // Sicherstellen dass Texturen unterschiedliche IDs haben
-    printf("Board TexID: %d, Checkerboard TexID: %d\n",
-        Textures[TextureBoard],
-        Textures[TextureCheckerboard]);
+    // Load Textures
+    loadWoodTexture();
 }
 
 void display() {
