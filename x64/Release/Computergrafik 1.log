@@ -66,15 +66,15 @@ C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(152,15):
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(152,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(153,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(153,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(220,20): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(241,22): warning C4305: '+=': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(244,22): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(238,17): warning C4101: 'py': unreferenced local variable
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(238,13): warning C4101: 'px': unreferenced local variable
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(287,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(288,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(226,20): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(247,22): warning C4305: '+=': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(250,22): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(244,17): warning C4101: 'py': unreferenced local variable
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(244,13): warning C4101: 'px': unreferenced local variable
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(293,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(294,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
   Generating code
-  6 of 255 functions ( 2.4%) were compiled, the rest were copied from previous compilation.
+  2 of 256 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

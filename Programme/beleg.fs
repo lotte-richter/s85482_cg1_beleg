@@ -13,9 +13,9 @@ void main(void) {
     vec4 texColor;
 
     if(objectId == 0){
-        texColor = texture(texCheckerboard, texCoord);
-    } else if(objectId == 1){
         texColor = texture(texBoard, texCoord);
+    } else if(objectId == 1){
+        texColor = texture(texCheckerboard, texCoord);
     }
 
     fColor = texColor;

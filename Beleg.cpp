@@ -157,7 +157,7 @@ void generateBoard() {
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBufferBoard]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(board_data), board_data, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(vPosition);
     glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(4 * sizeof(float)));
     glEnableVertexAttribArray(in_tex_coord);
@@ -169,6 +169,7 @@ void drawBoard() {
 
     // Textur binden
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureBoard]);
     glUniform1i(glGetUniformLocation(program, "texBoard"), 0);
 
     // Objekt ID setzen
@@ -178,6 +179,31 @@ void drawBoard() {
     for (int i = 0; i < 24; i += 4) {
         glDrawArrays(GL_TRIANGLE_FAN, i, 4);
     }
+}
+
+// ---- Textures ----
+void loadWoodTexture() {
+    const char* path = "images/wood.jpg";
+
+    FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(path, 0);
+    FIBITMAP* dib = FreeImage_Load(fif, path, 0);
+    dib = FreeImage_ConvertTo32Bits(dib);
+
+    int width = FreeImage_GetWidth(dib);
+    int height = FreeImage_GetHeight(dib);
+    void* data = FreeImage_GetBits(dib);
+
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureBoard]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+
+    // Textureinstellungen
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    FreeImage_Unload(dib);
 }
 
 void init() {
@@ -190,6 +216,11 @@ void init() {
     //glEnable(GL_CULL_FACE);
     generateBoard();
     generateCheckerboard();
+
+    // Sicherstellen dass Texturen unterschiedliche IDs haben
+    printf("Board TexID: %d, Checkerboard TexID: %d\n",
+        Textures[TextureBoard],
+        Textures[TextureCheckerboard]);
 }
 
 void display() {
@@ -227,7 +258,7 @@ void display() {
     
     glUniformMatrix4fv(Location, 1, GL_FALSE, &ModelViewProjection[0][0]);
     drawBoard();
-    //drawCheckerboard();
+    drawCheckerboard();
 
     glutSwapBuffers();
 }
