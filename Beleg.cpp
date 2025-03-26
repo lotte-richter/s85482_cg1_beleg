@@ -205,8 +205,8 @@ void generateChessPiece() {
     std::vector<GLfloat> vertices;
 
     const int segments = 32;
-    const float height = 0.7f;
-    const float radius = 0.3f;
+    const float height = 0.2f;
+    const float radius = 0.05f;
 
     // Zylinder-Mantel mit vec4 Positionen (w=1.0)
     for (int i = 0; i <= segments; i++) {
@@ -302,6 +302,14 @@ void loadMetalTexture() {
     FreeImage_Unload(dib);
 }
 
+
+vec3 getChessboardPosition(int x, int y) {
+    float fieldSize = 0.25f; // Größe eines Felds
+    float startX = -0.875f;  // Start x (A1)
+    float startZ = -0.875f;  // Start z (A1)
+    return vec3(startX + x * fieldSize, 0.0f, startZ + y * fieldSize);
+}
+
 void init() {
     program = loadShaders("Programme/beleg.vs", "Programme/beleg.fs", "", "", "", "");
     glUseProgram(program);
@@ -361,22 +369,21 @@ void display() {
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Projection[0][0]);
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
 
+    // Lichtparameter setzen
+    vec3 lightPos = vec3(2.0f, 3.0f, 2.0f);
+    glUniform3fv(glGetUniformLocation(program, "lightPos"), 1, &lightPos[0]);
+    glUniform3fv(glGetUniformLocation(program, "viewPos"), 1, viewpoint);
+
     drawBoard();
     drawCheckerboard();
 
-    // Bauer auf Position (0,1)
-    Model = mat4(1.0f);
-    Model = translate(Model, vec3(-3.5f + 0, 0.0f, -3.5f + 1));
-    Model = scale(Model, vec3(0.3f, 0.5f, 0.3f));
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-    drawChessPiece();
-
-    // Turm auf Position (0,0)
-    Model = mat4(1.0f);
-    Model = translate(Model, vec3(-3.5f + 0, 0.0f, -3.5f + 0));
-    Model = scale(Model, vec3(0.3f, 0.6f, 0.3f));
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-    drawChessPiece();
+    // Weiße Bauern
+    for (int i = 0; i < 8; i++) {
+        Model = mat4(1.0f);
+        Model = translate(Model, getChessboardPosition(1, i));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+        drawChessPiece();
+    }
 
     glutSwapBuffers();
 }
