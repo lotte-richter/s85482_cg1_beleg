@@ -34,6 +34,14 @@ GLfloat PI = 3.14159;
 GLfloat alpha = 0.2, beta = 0.8, dist = 5, DELTA = 0.5;
 bool isBlending = true, isTiefenPuffer = true, isStencil = false, isCullFace = false;
 
+// Animation
+bool isAnimating = false;
+float animationProgress = 0.0f;
+const float animationDuration = 2.0f; // seconds
+int pawnX = 1; // Startposition x
+int pawnY = 4; // Startposition y
+bool movingForward = true;
+vec3 startPos, targetPos, currentPos;
 
 
 // ==== custom functions ===
@@ -446,6 +454,31 @@ vec3 getChessboardPosition(int x, int y) {
     return vec3(startX + x * fieldSize, 0.0f, startZ + y * fieldSize);
 }
 
+
+void updateAnimation(float deltaTime) {
+    if (!isAnimating) return;
+
+    animationProgress += deltaTime / animationDuration;
+
+    if (animationProgress >= 1.0f) {
+        animationProgress = 0.0f;
+
+        if (movingForward) {
+            movingForward = false;
+            startPos = targetPos;
+            targetPos = getChessboardPosition(1, 4);// Zurück zur Startposition
+        }
+        else {
+            isAnimating = false;
+            pawnX = 1;
+            pawnY = 0;
+        }
+    }
+
+    // Lineare Interpolation zwischen Start- und Zielposition
+    currentPos = startPos + (targetPos - startPos) * animationProgress;
+}
+
 void init() {
     program = loadShaders("Programme/beleg.vs", "Programme/beleg.fs", "", "", "", "");
     glUseProgram(program);
@@ -533,10 +566,18 @@ void display() {
 
     // Weiße Figuren
     for (int i = 0; i < 8; i++) {
-        Model = mat4(1.0f);
-        Model = translate(Model, getChessboardPosition(1, i));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawChessPiece(1);
+        if (i == 4 && isAnimating) {
+            Model = mat4(1.0f);
+            Model = translate(Model, currentPos);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+            drawChessPiece(1);
+        }
+        else {
+            Model = mat4(1.0f);
+            Model = translate(Model, getChessboardPosition(1, i));
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+            drawChessPiece(1);
+        }
 
         Model = mat4(1.0f);
         Model = translate(Model, getChessboardPosition(0, i));
@@ -586,6 +627,15 @@ void keyboard(unsigned char theKey, int mouseX, int mouseY) {
     case 't': isTiefenPuffer = !isTiefenPuffer; break; //Tiefenpuffer anscahalten
     case 's': isStencil = !isStencil; break; //Stencil
     case 'c': isCullFace = !isCullFace; break; //Rückseitenentfernung
+    case 'a': if (!isAnimating) { // Animation starten
+        isAnimating = true;
+        movingForward = true;
+        animationProgress = 0.0f;
+        startPos = getChessboardPosition(1, 4);
+        targetPos = getChessboardPosition(3, 4);
+        currentPos = startPos;
+    }
+            break;
     case 'e': exit(-1);
     }
 }
@@ -629,7 +679,13 @@ void reshape(int w, int h) {
 }
 
 void idle(void) {
+    static int lastTime = glutGet(GLUT_ELAPSED_TIME);
+    int currentTime = glutGet(GLUT_ELAPSED_TIME);
+    float deltaTime = (currentTime - lastTime) / 1000.0f; // in sekunden
+    lastTime = currentTime;
+
     //increment();
+    updateAnimation(deltaTime);
     display();
     Sleep(15);
 }
