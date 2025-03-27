@@ -14,8 +14,14 @@ uniform int objectId; // 0: Board, 1: Checkerboard
 uniform vec3 lightPos;
 uniform vec3 lightColor = vec3(1.0, 1.0, 1.0);
 uniform vec3 viewPos;
+uniform vec3 spotlightPos;
+uniform vec3 spotlightDir;
+uniform float spotlightCutOff;
+uniform float spotlightOuterCutOff;
+uniform vec3 spotlightColor;
 
 out vec4 fColor;
+
 
 void main(void) {
     // Gemeinsame Lichtberechnung
@@ -25,7 +31,7 @@ void main(void) {
     vec3 reflectDir = reflect(-lightDir, norm);
 
     // Ambient
-    float ambientStrength = 0.5;
+    float ambientStrength = 0.3;
     vec3 ambient = ambientStrength * lightColor;
 
     // Diffuse
@@ -40,9 +46,29 @@ void main(void) {
 
     vec3 primaryLightResult = diffuse + specular;
 
+    // Spotlight-Berechnung    
+    float spotlightIntensity = 1.0f;
+    vec3 spotlightLightDir = normalize(spotlightDir);
+    vec3 spotlightToFrag = normalize(fragPos - spotlightPos);
+    float theta = dot(spotlightToFrag, spotlightLightDir);
+
+    float epsilon = spotlightCutOff - spotlightOuterCutOff;
+    float spotlightIntensityFactor = clamp((theta - spotlightOuterCutOff) / epsilon, 0.0, 2.0);
+
+    // Spotlight Diffuse
+    float spotlightDiff = max(dot(norm, -spotlightToFrag), 0.0);
+    vec3 spotlightDiffuse = spotlightDiff * spotlightColor;
+
+    // Spotlight Specular
+    vec3 spotlightReflectDir = reflect(spotlightToFrag, norm);
+    float spotlightSpec = pow(max(dot(viewDir, spotlightReflectDir), 0.0), 32.0);
+    vec3 spotlightSpecular = specularStrength * spotlightSpec * spotlightColor;
+
+    vec3 spotlightResult = (spotlightDiffuse + spotlightSpecular) * spotlightIntensityFactor * spotlightIntensity;
+
     // External light source ??
 
-    vec3 lightResult = ambient + primaryLightResult; // + externalLightResult
+    vec3 lightResult = ambient + primaryLightResult + spotlightResult; // + externalLightResult
     
     vec4 texColor;
 

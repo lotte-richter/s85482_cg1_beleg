@@ -105,19 +105,21 @@ void generateCheckerboard() {
 
     // Vertex-Daten für das Schachbrett (2D-Ebene)
     static const GLfloat checkerboard_data[] = {
-        // Oberfläche (leicht über dem braunen Quader)
-        -1.0,  0.01, -1.0, 1.0,  0,0,
-         1.0,  0.01, -1.0, 1.0,  1,0,
-         1.0,  0.01,  1.0, 1.0,  1,1,
-        -1.0,  0.01,  1.0, 1.0,  0,1
+        // Position           // Normal      // TexCoord
+        -1.0,  0.01, -1.0, 1.0,  0.0, 1.0, 0.0,  0,0,
+         1.0,  0.01, -1.0, 1.0,  0.0, 1.0, 0.0,  1,0,
+         1.0,  0.01,  1.0, 1.0,  0.0, 1.0, 0.0,  1,1,
+        -1.0,  0.01,  1.0, 1.0,  0.0, 1.0, 0.0,  0,1
     };
 
     glBindVertexArray(VAOs[VAOCheckerboard]);
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBufferCheckerboard]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(checkerboard_data), checkerboard_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*)0);
     glEnableVertexAttribArray(vPosition);
-    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(4 * sizeof(float)));
+    glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*)(4 * sizeof(float)));
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*)(7 * sizeof(float)));
     glEnableVertexAttribArray(in_tex_coord);
 }
 void drawCheckerboard() {
@@ -138,47 +140,53 @@ void drawCheckerboard() {
 void generateBoard() {
     // Vertex-Daten für den braunen Quader (etwas größer als das Schachbrett)
     static const GLfloat board_data[] = {
-        // Oberfläche
-        -1.1,  0.0, -1.1, 1.0,  0,0,
-         1.1,  0.0, -1.1, 1.0,  1,0,
-         1.1,  0.0,  1.1, 1.0,  1,1,
-        -1.1,  0.0,  1.1, 1.0,  0,1,
+        // Oberfläche (Normale nach oben)
+        // Position              // Normal        // TexCoord
+        -1.1,  0.0, -1.1, 1.0,  0.0, 1.0, 0.0,  0.0, 0.0,
+         1.1,  0.0, -1.1, 1.0,  0.0, 1.0, 0.0,  1.0, 0.0,
+         1.1,  0.0,  1.1, 1.0,  0.0, 1.0, 0.0,  1.0, 1.0,
+        -1.1,  0.0,  1.1, 1.0,  0.0, 1.0, 0.0,  0.0, 1.0,
 
-        // Unterseite
-        -1.1, -0.1, -1.1, 1.0,  0,0,
-         1.1, -0.1, -1.1, 1.0,  1,0,
-         1.1, -0.1,  1.1, 1.0,  1,1,
-        -1.1, -0.1,  1.1, 1.0,  0,1,
+        // Unterseite (Normale nach unten)
+        -1.1, -0.1, -1.1, 1.0,  0.0, -1.0, 0.0,  0.0, 0.0,
+         1.1, -0.1, -1.1, 1.0,  0.0, -1.0, 0.0,  1.0, 0.0,
+         1.1, -0.1,  1.1, 1.0,  0.0, -1.0, 0.0,  1.0, 1.0,
+        -1.1, -0.1,  1.1, 1.0,  0.0, -1.0, 0.0,  0.0, 1.0,
 
-        // Seiten
-        -1.1,  0.0, -1.1, 1.0,  0,0,
-        -1.1, -0.1, -1.1, 1.0,  1,0,
-         1.1, -0.1, -1.1, 1.0,  1,1,
-         1.1,  0.0, -1.1, 1.0,  0,1,
+        // Vorderseite (Normale nach vorne - negative Z-Richtung)
+        -1.1,  0.0, -1.1, 1.0,  0.0, 0.0, -1.0,  0.0, 0.0,
+        -1.1, -0.1, -1.1, 1.0,  0.0, 0.0, -1.0,  1.0, 0.0,
+         1.1, -0.1, -1.1, 1.0,  0.0, 0.0, -1.0,  1.0, 1.0,
+         1.1,  0.0, -1.1, 1.0,  0.0, 0.0, -1.0,  0.0, 1.0,
 
-        -1.1,  0.0,  1.1, 1.0,  0,0,
-        -1.1, -0.1,  1.1, 1.0,  1,0,
-         1.1, -0.1,  1.1, 1.0,  1,1,
-         1.1,  0.0,  1.1, 1.0,  0,1,
+         // Rückseite (Normale nach hinten - positive Z-Richtung)
+         -1.1,  0.0,  1.1, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0,
+         -1.1, -0.1,  1.1, 1.0,  0.0, 0.0, 1.0,  1.0, 0.0,
+          1.1, -0.1,  1.1, 1.0,  0.0, 0.0, 1.0,  1.0, 1.0,
+          1.1,  0.0,  1.1, 1.0,  0.0, 0.0, 1.0,  0.0, 1.0,
 
-        -1.1,  0.0, -1.1, 1.0,  0,0,
-        -1.1, -0.1, -1.1, 1.0,  1,0,
-        -1.1, -0.1,  1.1, 1.0,  1,1,
-        -1.1,  0.0,  1.1, 1.0,  0,1,
+          // Linke Seite (Normale nach links - negative X-Richtung)
+          -1.1,  0.0, -1.1, 1.0,  -1.0, 0.0, 0.0,  0.0, 0.0,
+          -1.1, -0.1, -1.1, 1.0,  -1.0, 0.0, 0.0,  1.0, 0.0,
+          -1.1, -0.1,  1.1, 1.0,  -1.0, 0.0, 0.0,  1.0, 1.0,
+          -1.1,  0.0,  1.1, 1.0,  -1.0, 0.0, 0.0,  0.0, 1.0,
 
-         1.1,  0.0, -1.1, 1.0,  0,0,
-         1.1, -0.1, -1.1, 1.0,  1,0,
-         1.1, -0.1,  1.1, 1.0,  1,1,
-         1.1,  0.0,  1.1, 1.0,  0,1
+          // Rechte Seite (Normale nach rechts - positive X-Richtung)
+           1.1,  0.0, -1.1, 1.0,  1.0, 0.0, 0.0,  0.0, 0.0,
+           1.1, -0.1, -1.1, 1.0,  1.0, 0.0, 0.0,  1.0, 0.0,
+           1.1, -0.1,  1.1, 1.0,  1.0, 0.0, 0.0,  1.0, 1.0,
+           1.1,  0.0,  1.1, 1.0,  1.0, 0.0, 0.0,  0.0, 1.0
     };
 
     glBindVertexArray(VAOs[VAOBoard]);
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBufferBoard]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(board_data), board_data, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(vPosition);
-    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(4 * sizeof(float)));
+    glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(4 * sizeof(float)));
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
     glEnableVertexAttribArray(in_tex_coord);
 }
 
@@ -370,9 +378,23 @@ void display() {
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
 
     // Lichtparameter setzen
-    vec3 lightPos = vec3(2.0f, 3.0f, 2.0f);
+    vec3 lightPos = vec3(0.0f, 0.0f, 2.0f);
+
+    // Spotlight-Parameter
+    vec3 spotlightPos = vec3(0.0f, 3.0f, 0.0f);  // Über dem Brett
+    vec3 spotlightDir = vec3(0.0f, -1.0f, 0.0f); // Nach unten gerichtet
+    float spotlightCutOff = cos(radians(15.0f));
+    float spotlightOuterCutOff = cos(radians(17.5f));
+    vec3 spotlightColor = vec3(1.0f, 1.0f, 1.0f);
+
     glUniform3fv(glGetUniformLocation(program, "lightPos"), 1, &lightPos[0]);
     glUniform3fv(glGetUniformLocation(program, "viewPos"), 1, viewpoint);
+
+    glUniform3fv(glGetUniformLocation(program, "spotlightPos"), 1, &spotlightPos[0]);
+    glUniform3fv(glGetUniformLocation(program, "spotlightDir"), 1, &spotlightDir[0]);
+    glUniform1f(glGetUniformLocation(program, "spotlightCutOff"), spotlightCutOff);
+    glUniform1f(glGetUniformLocation(program, "spotlightOuterCutOff"), spotlightOuterCutOff);
+    glUniform3fv(glGetUniformLocation(program, "spotlightColor"), 1, &spotlightColor[0]);
 
     drawBoard();
     drawCheckerboard();
