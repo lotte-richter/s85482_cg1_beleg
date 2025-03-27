@@ -9,6 +9,10 @@
 #include <vector>
 using namespace glm;
 
+constexpr int CHECKERBOARD_SIZE = 8;  // 8x8 Felder
+constexpr float FIELD_SIZE = 0.25f;
+constexpr int CIRCLE_SEGMENTS = 32;   // Detailstufe f¸r Zylinder/Kegel
+
 GLuint loadShaders(const char* vertexFilePath,
     const char* fragmentFilePath,
     const char* geometryFilePath,
@@ -19,6 +23,7 @@ GLint height = 100, width = 100;
 enum VAO_IDs { VAOCheckerboard, VAOBoard, VAOPieces, VAOCone, NumVAOs };
 enum Buffer_IDs { ArrayBufferCheckerboard, ArrayBufferBoard, ArrayBufferPieces, ArrayBufferCone, NumBuffers };
 enum Texture_IDs { TextureCheckerboard, TextureBoard, TextureWhite, TextureBlack, NumTextures };
+enum ObjectIDs { BOARD_ID, CHECKERBOARD_ID, WHITE_PIECE_ID, BLACK_PIECE_ID };
 enum Attrib_IDs { vPosition, in_tex_coord, vNormal };
 
 GLuint VAOs[NumVAOs];
@@ -26,13 +31,10 @@ GLuint Buffers[NumBuffers];
 GLuint Textures[NumTextures];
 GLuint program;
 GLfloat angle, anglestep;
-GLfloat shift;
-GLfloat kposx = 0.0;
-GLfloat kposy = 0.0;
 GLint mposx, mposy;
 GLfloat PI = 3.14159;
 GLfloat alpha = 0.2, beta = 0.8, dist = 5, DELTA = 0.5;
-bool isBlending = true, isTiefenPuffer = true, isStencil = false, isCullFace = false;
+bool  isTiefenPuffer = true, isCullFace = false;
 
 // Animation
 bool isAnimating = false;
@@ -47,63 +49,36 @@ vec3 startPos, targetPos, currentPos;
 // ==== custom functions ===
 
 void generateCheckerboard() {
-    // 8x8 Schachbrettmuster (RGBA)
-    /*static const GLubyte checkerboard[8 * 8 * 4] = {        
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF,
-        
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x8B,0x45,0x13,0xFF, 0xFF,0xFF,0xFF,0xFF
-    };*/
+    static const GLubyte checkerboard[CHECKERBOARD_SIZE * CHECKERBOARD_SIZE * 4] = {
 
-    static const GLubyte checkerboard[8 * 8 * 4] = {
-        // Zeile 1: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
-        // Zeile 2: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        // Zeile 3: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
-        // Zeile 4: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        // Zeile 5: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
-        // Zeile 6: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
-        // Zeile 7: Weiﬂ, Schwarz, Weiﬂ, Schwarz, ...
+
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
         0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF,
-        // Zeile 8: Schwarz, Weiﬂ, Schwarz, Weiﬂ, ...
+
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF,
         0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF, 0x00,0x00,0x00,0xFF, 0xFF,0xFF,0xFF,0xFF
     };
 
     // Textur erstellen und binden
     glBindTexture(GL_TEXTURE_2D, Textures[TextureCheckerboard]);
-    glTexStorage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 8, 8); // 8x8 Textur mit RGBA
+    glTexStorage2D(GL_TEXTURE_2D, 0, GL_RGBA8, CHECKERBOARD_SIZE, CHECKERBOARD_SIZE); // 8x8 Textur mit RGBA
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerboard);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -216,16 +191,14 @@ void drawBoard() {
     }
 }
 
-void generateChessPiece() {
-    // Bauer (einfacher Zylinder)
+void generateChessPiece() { // Bauer (einfacher Zylinder)    
     std::vector<GLfloat> vertices;
 
-    const int segments = 32;
     const float height = 0.2f;
     const float radius = 0.05f;
 
-    for (int i = 0; i <= segments; i++) {
-        float angle = 2.0f * PI * i / segments;
+    for (int i = 0; i <= CIRCLE_SEGMENTS; i++) {
+        float angle = 2.0f * PI * i / CIRCLE_SEGMENTS;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
 
@@ -234,28 +207,28 @@ void generateChessPiece() {
         // Unten
         vertices.insert(vertices.end(), { x, 0.0f, z, 1.0f });
         vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
-        vertices.insert(vertices.end(), { (float)i / segments, 0.0f });
+        vertices.insert(vertices.end(), { (float)i / CIRCLE_SEGMENTS, 0.0f });
 
         // Oben
         vertices.insert(vertices.end(), { x, height, z, 1.0f });
         vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
-        vertices.insert(vertices.end(), { (float)i / segments, 1.0f });
+        vertices.insert(vertices.end(), { (float)i / CIRCLE_SEGMENTS, 1.0f });
     }
 
 
     // Oberer Deckel
     vertices.insert(vertices.end(), { 0.0f, height, 0.0f, 1.0f });
     vertices.insert(vertices.end(), { 0.0f, 1.0f, 0.0f });
-    vertices.insert(vertices.end(), { 0.5f, 0.5f }); // Mittelpunkt UV = (0.5, 0.5)
+    vertices.insert(vertices.end(), { 0.5f, 0.5f });
 
-    for (int i = 0; i <= segments; i++) {
-        float angle = 2.0f * PI * i / segments;
+    for (int i = 0; i <= CIRCLE_SEGMENTS; i++) {
+        float angle = 2.0f * PI * i / CIRCLE_SEGMENTS;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
 
         vertices.insert(vertices.end(), { x, height, z, 1.0f });
         vertices.insert(vertices.end(), { 0.0f, 1.0f, 0.0f });
-        vertices.insert(vertices.end(), { (cos(angle) + 1.0f) / 2.0f, (sin(angle) + 1.0f) / 2.0f }); // UV auf Kreis mappen
+        vertices.insert(vertices.end(), { (cos(angle) + 1.0f) / 2.0f, (sin(angle) + 1.0f) / 2.0f });
     }
 
     glBindVertexArray(VAOs[VAOPieces]);
@@ -270,30 +243,30 @@ void generateChessPiece() {
     glEnableVertexAttribArray(vNormal);
 }
 
-void drawChessPiece(int color) { // color = 0 -> schwarz; color = 1 -> weiﬂ
+void drawChessPiece(int id) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(VAOs[VAOPieces]);
 
 
-    if (color == 0) {
+    if (id == BLACK_PIECE_ID) {
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, Textures[TextureBlack]);
         glGenerateMipmap(GL_TEXTURE_2D);
-        glUniform1i(glGetUniformLocation(program, "texBlack"), 3);
-        glUniform1i(glGetUniformLocation(program, "objectId"), 3);
+        glUniform1i(glGetUniformLocation(program, "texBlack"), BLACK_PIECE_ID);
+        glUniform1i(glGetUniformLocation(program, "objectId"), BLACK_PIECE_ID);
     } else{
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, Textures[TextureWhite]);
         glGenerateMipmap(GL_TEXTURE_2D);
-        glUniform1i(glGetUniformLocation(program, "texWhite"), 2);
-        glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+        glUniform1i(glGetUniformLocation(program, "texWhite"), WHITE_PIECE_ID);
+        glUniform1i(glGetUniformLocation(program, "objectId"), WHITE_PIECE_ID);
     }
     
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 2 * (32 + 1)); // 32 Segmente
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 2 * (CIRCLE_SEGMENTS + 1));
 
     // Oberer Deckel 
-    glDrawArrays(GL_TRIANGLE_FAN, 2 * (32 + 1), 32 + 2);
+    glDrawArrays(GL_TRIANGLE_FAN, 2 * (CIRCLE_SEGMENTS + 1), CIRCLE_SEGMENTS + 2);
 }
 
 void generateConePiece() {
@@ -301,10 +274,9 @@ void generateConePiece() {
     const float radius = 0.05f;
     float startAngle = 0.0f;
 
-    const int segments = 32;
-    const float sectionAngle = PI * 2 / segments;
+    const float sectionAngle = PI * 2 / CIRCLE_SEGMENTS;
 
-    // Vertex-Daten mit Position (3), Normalen (3) und Texturkoordinaten (2)
+    // Vertex-Daten mit Position (4), Normalen (3) und Texturkoordinaten (2)
     std::vector<GLfloat> vertices;
 
     // Kreis Mittelpunkt
@@ -312,28 +284,28 @@ void generateConePiece() {
     vertices.insert(vertices.end(), { 0.0f, -1.0f, 0.0f }); // Normale
     vertices.insert(vertices.end(), { 0.5f, 0.5f }); // UV
 
-    // Kreisumfang (korrigierte UVs)
-    for (int i = 0; i <= segments; i++) {
+    // Kreisumfang
+    for (int i = 0; i <= CIRCLE_SEGMENTS; i++) {
         float angle = sectionAngle * i;
         vertices.insert(vertices.end(), { cos(angle) * radius, 0.0f, sin(angle) * radius, 1.0f });
         vertices.insert(vertices.end(), { 0.0f, -1.0f, 0.0f });
         vertices.insert(vertices.end(), { 0.5f + 0.5f * cos(angle), 0.5f + 0.5f * sin(angle) }); // Korrekte UVs
     }
 
-    // 2. Mantel - GL_TRIANGLE_STRIP
-    for (int i = 0; i <= segments; i++) {
+    //Mantel
+    for (int i = 0; i <= CIRCLE_SEGMENTS; i++) {
         float angle = sectionAngle * i;
         vec3 normal = normalize(vec3(cos(angle), radius / height, sin(angle)));
 
         // Unten
         vertices.insert(vertices.end(), { cos(angle) * radius, 0.0f, sin(angle) * radius, 1.0f });
         vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
-        vertices.insert(vertices.end(), { (float)i / segments, 0.0f });
+        vertices.insert(vertices.end(), { (float)i / CIRCLE_SEGMENTS, 0.0f });
 
         // Spitze
         vertices.insert(vertices.end(), { 0.0f, height, 0.0f, 1.0f });
         vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
-        vertices.insert(vertices.end(), { (float)i / segments, 1.0f });
+        vertices.insert(vertices.end(), { (float)i / CIRCLE_SEGMENTS, 1.0f });
     }
 
     glBindVertexArray(VAOs[VAOCone]);
@@ -347,29 +319,28 @@ void generateConePiece() {
     glEnableVertexAttribArray(in_tex_coord);
 }
 
-void drawConePiece(int color) {
-    int circPoints = 32;
+void drawConePiece(int id) {
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(VAOs[VAOCone]);
 
-    if (color == 0) {
+    if (id == BLACK_PIECE_ID) {
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, Textures[TextureBlack]);
         glGenerateMipmap(GL_TEXTURE_2D);
-        glUniform1i(glGetUniformLocation(program, "texBlack"), 3);
-        glUniform1i(glGetUniformLocation(program, "objectId"), 3);
+        glUniform1i(glGetUniformLocation(program, "texBlack"), BLACK_PIECE_ID);
+        glUniform1i(glGetUniformLocation(program, "objectId"), BLACK_PIECE_ID);
     }
     else {
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, Textures[TextureWhite]);
         glGenerateMipmap(GL_TEXTURE_2D);
-        glUniform1i(glGetUniformLocation(program, "texWhite"), 2);
-        glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+        glUniform1i(glGetUniformLocation(program, "texWhite"), WHITE_PIECE_ID);
+        glUniform1i(glGetUniformLocation(program, "objectId"), WHITE_PIECE_ID);
     }
 
-    glDrawArrays(GL_TRIANGLE_FAN, 0, circPoints + 2);
-    glDrawArrays(GL_TRIANGLE_STRIP, circPoints + 2, 2 * (circPoints + 1));
+    glDrawArrays(GL_TRIANGLE_FAN, 0, CIRCLE_SEGMENTS + 2);
+    glDrawArrays(GL_TRIANGLE_STRIP, CIRCLE_SEGMENTS + 2, 2 * (CIRCLE_SEGMENTS + 1));
 }
 
 // ---- Textures ----
@@ -446,12 +417,12 @@ void loadBlackTexture() {
     FreeImage_Unload(dib);
 }
 
+// ---- other functions ----
 
 vec3 getChessboardPosition(int x, int y) {
-    float fieldSize = 0.25f; // Grˆﬂe eines Felds
-    float startX = -0.875f;  // Start x (A1)
-    float startZ = -0.875f;  // Start z (A1)
-    return vec3(startX + x * fieldSize, 0.0f, startZ + y * fieldSize);
+    float startX = -((CHECKERBOARD_SIZE / 2.0f) * FIELD_SIZE) + (FIELD_SIZE / 2.0f);
+    float startZ = startX;
+    return vec3(startX + x * FIELD_SIZE, 0.0f, startZ + y * FIELD_SIZE);
 }
 
 
@@ -486,7 +457,7 @@ void init() {
     glGenVertexArrays(NumVAOs, VAOs);
     glGenTextures(NumTextures, Textures);
     glClearStencil(0x0);
-    //glEnable(GL_CULL_FACE);
+
     generateBoard();
     generateCheckerboard();
     generateChessPiece();
@@ -499,17 +470,9 @@ void init() {
 }
 
 void display() {
-    if (isBlending)
-        glEnable(GL_BLEND);
-    else glDisable(GL_BLEND);
-
     if (isTiefenPuffer)
         glEnable(GL_DEPTH_TEST);
     else glDisable(GL_DEPTH_TEST);
-
-    if (isStencil)
-        glEnable(GL_STENCIL_TEST);
-    else glDisable(GL_STENCIL_TEST);
 
     if (isCullFace)
         glEnable(GL_CULL_FACE);
@@ -570,19 +533,19 @@ void display() {
             Model = mat4(1.0f);
             Model = translate(Model, currentPos);
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-            drawChessPiece(1);
+            drawChessPiece(WHITE_PIECE_ID);
         }
         else {
             Model = mat4(1.0f);
             Model = translate(Model, getChessboardPosition(1, i));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-            drawChessPiece(1);
+            drawChessPiece(WHITE_PIECE_ID);
         }
 
         Model = mat4(1.0f);
         Model = translate(Model, getChessboardPosition(0, i));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawConePiece(1);
+        drawConePiece(WHITE_PIECE_ID);
     }
 
     // Schwarze Figuren
@@ -590,31 +553,16 @@ void display() {
         Model = mat4(1.0f);
         Model = translate(Model, getChessboardPosition(6, i));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawChessPiece(0);
+        drawChessPiece(BLACK_PIECE_ID);
 
         Model = mat4(1.0f);
         Model = translate(Model, getChessboardPosition(7, i));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawConePiece(0);
+        drawConePiece(BLACK_PIECE_ID);
     }
 
 
     glutSwapBuffers();
-}
-
-void keyboard_rotate(unsigned char theKey, int mouseX, int mouseY) {
-    GLint x = mouseX;
-    GLint y = height - mouseY;
-    GLfloat px, py;
-    switch (theKey) {
-    case 'p':
-        anglestep += 0.01;
-        break;
-    case 'o':
-        anglestep -= 0.01;
-        break;
-    case 'e': exit(-1);
-    }
 }
 
 void keyboard(unsigned char theKey, int mouseX, int mouseY) {
@@ -623,9 +571,7 @@ void keyboard(unsigned char theKey, int mouseX, int mouseY) {
     switch (theKey) {
     case 'v': dist -= DELTA; display(); break; //reinzoomen
     case 'z': dist += DELTA; display(); break; //rauszoomen
-    case 'b': isBlending = !isBlending; break; //transparenz
     case 't': isTiefenPuffer = !isTiefenPuffer; break; //Tiefenpuffer anscahalten
-    case 's': isStencil = !isStencil; break; //Stencil
     case 'c': isCullFace = !isCullFace; break; //R¸ckseitenentfernung
     case 'a': if (!isAnimating) { // Animation starten
         isAnimating = true;
@@ -684,7 +630,6 @@ void idle(void) {
     float deltaTime = (currentTime - lastTime) / 1000.0f; // in sekunden
     lastTime = currentTime;
 
-    //increment();
     updateAnimation(deltaTime);
     display();
     Sleep(15);
