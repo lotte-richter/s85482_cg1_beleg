@@ -6,13 +6,14 @@ in vec2 texCoord;
 
 uniform sampler2D texCheckerboard;
 uniform sampler2D texWood;
-uniform sampler2D texMetal;
+uniform sampler2D texWhite;
+uniform sampler2D texBlack;
 
-uniform int objectId; // 0: Board, 1: Checkerboard
+uniform int objectId; // 0: Board, 1: Checkerboard, 2: White Chess Pieces, 3: Black Chess Pieces
 
 // Lichtparameter
 uniform vec3 lightPos;
-uniform vec3 lightColor = vec3(1.0, 1.0, 1.0);
+uniform vec3 lightColor;
 uniform vec3 viewPos;
 uniform vec3 spotlightPos;
 uniform vec3 spotlightDir;
@@ -40,14 +41,14 @@ void main(void) {
     vec3 diffuse = diff * lightColor * primaryDiffuseStrength;
 
     // Specular (nur für Metall)
-    float specularStrength = 0.5;
+    float specularStrength = 2.1;
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
     vec3 specular = specularStrength * spec * lightColor;
 
     vec3 primaryLightResult = diffuse + specular;
 
     // Spotlight-Berechnung    
-    float spotlightIntensity = 1.0f;
+    float spotlightIntensity = 2.0f;
     vec3 spotlightLightDir = normalize(spotlightDir);
     vec3 spotlightToFrag = normalize(fragPos - spotlightPos);
     float theta = dot(spotlightToFrag, spotlightLightDir);
@@ -77,7 +78,9 @@ void main(void) {
     } else if(objectId == 1){
         texColor = texture(texCheckerboard, texCoord);
     } else if(objectId == 2){
-        texColor = texture(texMetal, texCoord);
+        texColor = texture(texWhite, texCoord);
+    } else if(objectId == 3){
+        texColor = texture(texBlack, texCoord);
     }
 
     // fColor = texColor;

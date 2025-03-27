@@ -1,81 +1,25 @@
-﻿  Beleg.cpp
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(34,12): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(35,15): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(35,27): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(109,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(110,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(111,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(112,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(145,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(145,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(146,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(146,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(147,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(147,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(148,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(148,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(151,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(151,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(151,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(152,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(152,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(152,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(153,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(153,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(153,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(154,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(154,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(154,22): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(157,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(157,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(158,9): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(158,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(158,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(159,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(159,15): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(159,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(160,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(160,21): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(163,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(163,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(164,10): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(164,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(164,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(165,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(165,16): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(165,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(166,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(166,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(169,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(169,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(170,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(170,17): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(170,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(171,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(171,17): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(171,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(172,11): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(172,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(175,12): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(175,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(176,12): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(176,17): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(176,23): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(177,12): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(177,17): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(177,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(178,12): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(178,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(363,20): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(421,22): warning C4305: '+=': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(424,22): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(418,17): warning C4101: 'py': unreferenced local variable
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(418,13): warning C4101: 'px': unreferenced local variable
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(467,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(468,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+﻿  Rad.cpp
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(29,12): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(30,15): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(30,27): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(46,46): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(46,38): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(46,30): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(53,49): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(74,46): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(74,38): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(74,30): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(104,20): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(116,18): warning C4305: '+=': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(133,22): warning C4305: '+=': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(136,22): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(130,17): warning C4101: 'py': unreferenced local variable
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(130,13): warning C4101: 'px': unreferenced local variable
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(175,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Rad.cpp(176,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
   Generating code
-  1 of 330 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+  13 of 260 functions ( 5.0%) were compiled, the rest were copied from previous compilation.
+    6 functions were new in current compilation
+    13 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Computergrafik 1.vcxproj -> C:\Users\lotte\source\repos\Computergrafik 1\x64\Release\Computergrafik 1.exe

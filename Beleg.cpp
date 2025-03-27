@@ -16,10 +16,9 @@ GLuint loadShaders(const char* vertexFilePath,
     const char* tessevaluationFilePath,
     const char* computeFilePath);
 GLint height = 100, width = 100;
-enum VAO_IDs { VAOCheckerboard, VAOBoard, VAOPieces, NumVAOs };
-enum Buffer_IDs { ArrayBufferCheckerboard, ArrayBufferBoard, ArrayBufferPieces, NumBuffers };
-enum Texture_IDs { TextureCheckerboard, TextureBoard, TextureMetal, NumTextures };
-enum Object_IDs { BOARD_ID, CHECKERBOARD_ID, NUM_OBJECTS };
+enum VAO_IDs { VAOCheckerboard, VAOBoard, VAOPieces, VAOCone, NumVAOs };
+enum Buffer_IDs { ArrayBufferCheckerboard, ArrayBufferBoard, ArrayBufferPieces, ArrayBufferCone, NumBuffers };
+enum Texture_IDs { TextureCheckerboard, TextureBoard, TextureWhite, TextureBlack, NumTextures };
 enum Attrib_IDs { vPosition, in_tex_coord, vNormal };
 
 GLuint VAOs[NumVAOs];
@@ -122,6 +121,7 @@ void generateCheckerboard() {
     glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*)(7 * sizeof(float)));
     glEnableVertexAttribArray(in_tex_coord);
 }
+
 void drawCheckerboard() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(VAOs[VAOCheckerboard]);
@@ -132,7 +132,7 @@ void drawCheckerboard() {
     glUniform1i(glGetUniformLocation(program, "texCheckerboard"), 1);
 
     // Object ID setzen
-    glUniform1i(glGetUniformLocation(program, "objectId"), CHECKERBOARD_ID);
+    glUniform1i(glGetUniformLocation(program, "objectId"), 1);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
@@ -200,7 +200,7 @@ void drawBoard() {
     glUniform1i(glGetUniformLocation(program, "texWood"), 0);
 
     // Objekt ID setzen
-    glUniform1i(glGetUniformLocation(program, "objectId"), BOARD_ID);
+    glUniform1i(glGetUniformLocation(program, "objectId"), 0);
 
     // Quader zeichnen
     for (int i = 0; i < 24; i += 4) {
@@ -216,23 +216,38 @@ void generateChessPiece() {
     const float height = 0.2f;
     const float radius = 0.05f;
 
-    // Zylinder-Mantel mit vec4 Positionen (w=1.0)
     for (int i = 0; i <= segments; i++) {
         float angle = 2.0f * PI * i / segments;
         float x = radius * cos(angle);
         float z = radius * sin(angle);
-        float nx = cos(angle);
-        float nz = sin(angle);
+
+        vec3 normal = normalize(vec3(cos(angle), 0.0f, sin(angle))); // Explizite Normalisierung
 
         // Unten
-        vertices.insert(vertices.end(), { x, 0.0f, z, 1.0f }); 
-        vertices.insert(vertices.end(), { nx, 0.0f, nz }); 
-        vertices.insert(vertices.end(), { (float)i / segments, 0.0f }); 
+        vertices.insert(vertices.end(), { x, 0.0f, z, 1.0f });
+        vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
+        vertices.insert(vertices.end(), { (float)i / segments, 0.0f });
 
         // Oben
         vertices.insert(vertices.end(), { x, height, z, 1.0f });
-        vertices.insert(vertices.end(), { nx, 0.0f, nz }); 
+        vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
         vertices.insert(vertices.end(), { (float)i / segments, 1.0f });
+    }
+
+
+    // Oberer Deckel
+    vertices.insert(vertices.end(), { 0.0f, height, 0.0f, 1.0f });
+    vertices.insert(vertices.end(), { 0.0f, 1.0f, 0.0f });
+    vertices.insert(vertices.end(), { 0.5f, 0.5f }); // Mittelpunkt UV = (0.5, 0.5)
+
+    for (int i = 0; i <= segments; i++) {
+        float angle = 2.0f * PI * i / segments;
+        float x = radius * cos(angle);
+        float z = radius * sin(angle);
+
+        vertices.insert(vertices.end(), { x, height, z, 1.0f });
+        vertices.insert(vertices.end(), { 0.0f, 1.0f, 0.0f });
+        vertices.insert(vertices.end(), { (cos(angle) + 1.0f) / 2.0f, (sin(angle) + 1.0f) / 2.0f }); // UV auf Kreis mappen
     }
 
     glBindVertexArray(VAOs[VAOPieces]);
@@ -247,17 +262,106 @@ void generateChessPiece() {
     glEnableVertexAttribArray(vNormal);
 }
 
-void drawChessPiece() {
+void drawChessPiece(int color) { // color = 0 -> schwarz; color = 1 -> weiﬂ
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(VAOs[VAOPieces]);
 
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, Textures[TextureMetal]);
-    glUniform1i(glGetUniformLocation(program, "texMetal"), 2);
 
-    glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+    if (color == 0) {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, Textures[TextureBlack]);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glUniform1i(glGetUniformLocation(program, "texBlack"), 3);
+        glUniform1i(glGetUniformLocation(program, "objectId"), 3);
+    } else{
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, Textures[TextureWhite]);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glUniform1i(glGetUniformLocation(program, "texWhite"), 2);
+        glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+    }
+    
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 2 * (32 + 1)); // 32 Segmente + Deckel
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 2 * (32 + 1)); // 32 Segmente
+
+    // Oberer Deckel 
+    glDrawArrays(GL_TRIANGLE_FAN, 2 * (32 + 1), 32 + 2);
+}
+
+void generateConePiece() {
+    const float height = 0.5f;
+    const float radius = 0.05f;
+    float startAngle = 0.0f;
+
+    const int segments = 32;
+    const float sectionAngle = PI * 2 / segments;
+
+    // Vertex-Daten mit Position (3), Normalen (3) und Texturkoordinaten (2)
+    std::vector<GLfloat> vertices;
+
+    // Kreis Mittelpunkt
+    vertices.insert(vertices.end(), { 0.0f, 0.0f, 0.0f, 1.0f });
+    vertices.insert(vertices.end(), { 0.0f, -1.0f, 0.0f }); // Normale
+    vertices.insert(vertices.end(), { 0.5f, 0.5f }); // UV
+
+    // Kreisumfang (korrigierte UVs)
+    for (int i = 0; i <= segments; i++) {
+        float angle = sectionAngle * i;
+        vertices.insert(vertices.end(), { cos(angle) * radius, 0.0f, sin(angle) * radius, 1.0f });
+        vertices.insert(vertices.end(), { 0.0f, -1.0f, 0.0f });
+        vertices.insert(vertices.end(), { 0.5f + 0.5f * cos(angle), 0.5f + 0.5f * sin(angle) }); // Korrekte UVs
+    }
+
+    // 2. Mantel - GL_TRIANGLE_STRIP
+    for (int i = 0; i <= segments; i++) {
+        float angle = sectionAngle * i;
+        vec3 normal = normalize(vec3(cos(angle), radius / height, sin(angle)));
+
+        // Unten
+        vertices.insert(vertices.end(), { cos(angle) * radius, 0.0f, sin(angle) * radius, 1.0f });
+        vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
+        vertices.insert(vertices.end(), { (float)i / segments, 0.0f });
+
+        // Spitze
+        vertices.insert(vertices.end(), { 0.0f, height, 0.0f, 1.0f });
+        vertices.insert(vertices.end(), { normal.x, normal.y, normal.z });
+        vertices.insert(vertices.end(), { (float)i / segments, 1.0f });
+    }
+
+    glBindVertexArray(VAOs[VAOCone]);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBufferCone]);glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(vPosition);
+    glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(4 * sizeof(float)));
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(in_tex_coord, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+    glEnableVertexAttribArray(in_tex_coord);
+}
+
+void drawConePiece(int color) {
+    int circPoints = 32;
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBindVertexArray(VAOs[VAOCone]);
+
+    if (color == 0) {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, Textures[TextureBlack]);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glUniform1i(glGetUniformLocation(program, "texBlack"), 3);
+        glUniform1i(glGetUniformLocation(program, "objectId"), 3);
+    }
+    else {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, Textures[TextureWhite]);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glUniform1i(glGetUniformLocation(program, "texWhite"), 2);
+        glUniform1i(glGetUniformLocation(program, "objectId"), 2);
+    }
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, circPoints + 2);
+    glDrawArrays(GL_TRIANGLE_STRIP, circPoints + 2, 2 * (circPoints + 1));
 }
 
 // ---- Textures ----
@@ -286,8 +390,8 @@ void loadWoodTexture() {
     FreeImage_Unload(dib);
 }
 
-void loadMetalTexture() {
-    const char* path = "images/metal.jpg";
+void loadWhiteTexture() {
+    const char* path = "images/white_metal.jpg";
 
     FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(path, 0);
     FIBITMAP* dib = FreeImage_Load(fif, path, 0);
@@ -297,7 +401,31 @@ void loadMetalTexture() {
     int height = FreeImage_GetHeight(dib);
     void* data = FreeImage_GetBits(dib);
 
-    glBindTexture(GL_TEXTURE_2D, Textures[TextureMetal]);
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureWhite]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+
+    // Textureinstellungen
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    FreeImage_Unload(dib);
+}
+
+void loadBlackTexture() {
+    const char* path = "images/black_metal.jpg";
+
+    FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(path, 0);
+    FIBITMAP* dib = FreeImage_Load(fif, path, 0);
+    dib = FreeImage_ConvertTo32Bits(dib);
+
+    int width = FreeImage_GetWidth(dib);
+    int height = FreeImage_GetHeight(dib);
+    void* data = FreeImage_GetBits(dib);
+
+    glBindTexture(GL_TEXTURE_2D, Textures[TextureBlack]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 
     // Textureinstellungen
@@ -329,10 +457,12 @@ void init() {
     generateBoard();
     generateCheckerboard();
     generateChessPiece();
+    generateConePiece();
 
     // Load Textures
     loadWoodTexture();
-    loadMetalTexture();
+    loadWhiteTexture();
+    loadBlackTexture();
 }
 
 void display() {
@@ -378,17 +508,19 @@ void display() {
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
 
     // Lichtparameter setzen
-    vec3 lightPos = vec3(0.0f, 0.0f, 2.0f);
+    vec3 lightPos = vec3(1.0f, 1.0f, 2.0f);
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     // Spotlight-Parameter
-    vec3 spotlightPos = vec3(0.0f, 3.0f, 0.0f);  // ‹ber dem Brett
-    vec3 spotlightDir = vec3(0.0f, -1.0f, 0.0f); // Nach unten gerichtet
+    vec3 spotlightPos = vec3(0.0f, -3.0f, 0.0f);  // ‹ber dem Brett
+    vec3 spotlightDir = vec3(0.0f, 1.0f, 0.0f); // Nach unten gerichtet
     float spotlightCutOff = cos(radians(15.0f));
     float spotlightOuterCutOff = cos(radians(17.5f));
     vec3 spotlightColor = vec3(1.0f, 1.0f, 1.0f);
 
     glUniform3fv(glGetUniformLocation(program, "lightPos"), 1, &lightPos[0]);
     glUniform3fv(glGetUniformLocation(program, "viewPos"), 1, viewpoint);
+    glUniform3fv(glGetUniformLocation(program, "lightColor"), 1, &lightColor[0]);
 
     glUniform3fv(glGetUniformLocation(program, "spotlightPos"), 1, &spotlightPos[0]);
     glUniform3fv(glGetUniformLocation(program, "spotlightDir"), 1, &spotlightDir[0]);
@@ -399,13 +531,32 @@ void display() {
     drawBoard();
     drawCheckerboard();
 
-    // Weiﬂe Bauern
+    // Weiﬂe Figuren
     for (int i = 0; i < 8; i++) {
         Model = mat4(1.0f);
         Model = translate(Model, getChessboardPosition(1, i));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawChessPiece();
+        drawChessPiece(1);
+
+        Model = mat4(1.0f);
+        Model = translate(Model, getChessboardPosition(0, i));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+        drawConePiece(1);
     }
+
+    // Schwarze Figuren
+    for (int i = 0; i < 8; i++) {
+        Model = mat4(1.0f);
+        Model = translate(Model, getChessboardPosition(6, i));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+        drawChessPiece(0);
+
+        Model = mat4(1.0f);
+        Model = translate(Model, getChessboardPosition(7, i));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+        drawConePiece(0);
+    }
+
 
     glutSwapBuffers();
 }

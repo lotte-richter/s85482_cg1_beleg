@@ -69,6 +69,9 @@
     <ClCompile Include="Beleg.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rad.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Programme\Dreiecke.fs">
