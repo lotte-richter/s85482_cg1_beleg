@@ -18,104 +18,11 @@
     <ClCompile Include="Programme\LoadShader.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="Programme\dreiecksfeld.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\prak3.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\prak4.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Rad.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Rechteck.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Rechteck2.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Rechtecke.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\vertexShader.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\V-Raum_Ansicht.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\V-Shader.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\V-Zeichnung-Attribute.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\V-Zeichnung-Attribute-2.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Dreiecke.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Wuerfel.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Pixel_Puffer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Programme\Textur.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="Beleg.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rad.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Programme\Dreiecke.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Dreiecke.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Dreiecksfeld.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\gouraud.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\gouraud.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\V-FragmentShader.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\V-Raum-Ansicht.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\V-Raum-Ansicht.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\V-VertexShader.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Wuerfel.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Wuerfel.vs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\transparenz.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Textur.fs">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Programme\Textur.vs">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="Programme\beleg.vs">
       <Filter>Source Files</Filter>
     </None>

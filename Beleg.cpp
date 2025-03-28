@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glm.hpp>
@@ -11,7 +11,7 @@ using namespace glm;
 
 constexpr int CHECKERBOARD_SIZE = 8;  // 8x8 Felder
 constexpr float FIELD_SIZE = 0.25f;
-constexpr int CIRCLE_SEGMENTS = 32;   // Detailstufe für Zylinder/Kegel
+constexpr int CIRCLE_SEGMENTS = 32;   // Detailstufe fÃ¼r Zylinder/Kegel
 
 GLuint loadShaders(const char* vertexFilePath,
     const char* fragmentFilePath,
@@ -44,7 +44,6 @@ int pawnX = 1; // Startposition x
 int pawnY = 4; // Startposition y
 bool movingForward = true;
 vec3 startPos, targetPos, currentPos;
-
 
 // ==== custom functions ===
 
@@ -85,7 +84,7 @@ void generateCheckerboard() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Vertex-Daten für das Schachbrett (2D-Ebene)
+    // Vertex-Daten fÃ¼r das Schachbrett (2D-Ebene)
     static const GLfloat checkerboard_data[] = {
         // Position           // Normal      // TexCoord
         -1.0,  0.01, -1.0, 1.0,  0.0, 1.0, 0.0,  0,0,
@@ -121,9 +120,9 @@ void drawCheckerboard() {
 }
 
 void generateBoard() {
-    // Vertex-Daten für den braunen Quader (etwas größer als das Schachbrett)
+    // Vertex-Daten fÃ¼r den braunen Quader (etwas grÃ¶ÃŸer als das Schachbrett)
     static const GLfloat board_data[] = {
-        // Oberfläche (Normale nach oben)
+        // OberflÃ¤che (Normale nach oben)
         // Position              // Normal        // TexCoord
         -1.1,  0.0, -1.1, 1.0,  0.0, 1.0, 0.0,  0.0, 0.0,
          1.1,  0.0, -1.1, 1.0,  0.0, 1.0, 0.0,  1.0, 0.0,
@@ -142,7 +141,7 @@ void generateBoard() {
          1.1, -0.1, -1.1, 1.0,  0.0, 0.0, -1.0,  1.0, 1.0,
          1.1,  0.0, -1.1, 1.0,  0.0, 0.0, -1.0,  0.0, 1.0,
 
-         // Rückseite (Normale nach hinten - positive Z-Richtung)
+         // RÃ¼ckseite (Normale nach hinten - positive Z-Richtung)
          -1.1,  0.0,  1.1, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0,
          -1.1, -0.1,  1.1, 1.0,  0.0, 0.0, 1.0,  1.0, 0.0,
           1.1, -0.1,  1.1, 1.0,  0.0, 0.0, 1.0,  1.0, 1.0,
@@ -437,7 +436,7 @@ void updateAnimation(float deltaTime) {
         if (movingForward) {
             movingForward = false;
             startPos = targetPos;
-            targetPos = getChessboardPosition(1, 4);// Zurück zur Startposition
+            targetPos = getChessboardPosition(1, 4);// ZurÃ¼ck zur Startposition
         }
         else {
             isAnimating = false;
@@ -480,42 +479,41 @@ void display() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLfloat viewpoint[3];
-    viewpoint[0] = dist * sin(beta) * sin(alpha);
-    viewpoint[1] = dist * cos(beta);
-    viewpoint[2] = dist * sin(beta) * cos(alpha);
-    glViewport(0, 0, width, height);
-
-    angle -= (0.01 + anglestep);
-
     // Uniform Locations vorab holen
     GLuint modelLoc = glGetUniformLocation(program, "model");
     GLuint viewLoc = glGetUniformLocation(program, "view");
     GLuint projLoc = glGetUniformLocation(program, "projection");
 
-    mat4 Projection = perspective(1.0f, 1.0f, 0.1f, 100.f);
-    mat4 View = lookAt(vec3(viewpoint[0], viewpoint[1], viewpoint[2]), vec3(0.5, 0.5, 0.5), vec3(0.0, cos(beta - PI * 0.5), 0.0));
-    mat4 Model = mat4(1.0f);
-    mat4 ModelViewProjection = Projection * View * Model;
+    int numViewports = 4;
+    int viewportWidth = width / 2;
+    int viewportHeight = height / 2;
 
-    // Gemeinsame Matrizen setzen
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &View[0][0]);
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Projection[0][0]);
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+    vec3 viewpoints[4] = {
+        vec3(dist * sin(beta) * sin(alpha), dist * cos(beta), dist * sin(beta) * cos(alpha)), // Frei drehbare Kamera
+        vec3(1.0f, 4.0f, 1.0f),  // Draufsicht
+        vec3(3.0f, 1.5f, 3.0f),  // SchrÃ¤ge Perspektive
+        vec3(2.0f, -3.0f, 1.0f) // Ansicht von unten
+    };
+
+    mat4 projections[4] = {
+        perspective(1.0f, 1.0f, 0.1f, 100.f),
+        ortho(-1.5f, 1.5f, -1.5f, 1.5f, 0.1f, 100.f),
+        perspective(1.2f, 1.0f, 0.1f, 100.f),
+        perspective(1.2f, 1.0f, 0.1f, 100.f)
+    };
 
     // Lichtparameter setzen
     vec3 lightPos = vec3(1.0f, 1.0f, 2.0f);
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     // Spotlight-Parameter
-    vec3 spotlightPos = vec3(0.0f, -3.0f, 0.0f);  // Über dem Brett
+    vec3 spotlightPos = vec3(0.0f, -3.0f, 0.0f);  // ï¿½ber dem Brett
     vec3 spotlightDir = vec3(0.0f, 1.0f, 0.0f); // Nach unten gerichtet
     float spotlightCutOff = cos(radians(15.0f));
     float spotlightOuterCutOff = cos(radians(17.5f));
     vec3 spotlightColor = vec3(1.0f, 1.0f, 1.0f);
 
     glUniform3fv(glGetUniformLocation(program, "lightPos"), 1, &lightPos[0]);
-    glUniform3fv(glGetUniformLocation(program, "viewPos"), 1, viewpoint);
     glUniform3fv(glGetUniformLocation(program, "lightColor"), 1, &lightColor[0]);
 
     glUniform3fv(glGetUniformLocation(program, "spotlightPos"), 1, &spotlightPos[0]);
@@ -524,43 +522,57 @@ void display() {
     glUniform1f(glGetUniformLocation(program, "spotlightOuterCutOff"), spotlightOuterCutOff);
     glUniform3fv(glGetUniformLocation(program, "spotlightColor"), 1, &spotlightColor[0]);
 
-    drawBoard();
-    drawCheckerboard();
+    for (int i = 0; i < numViewports; i++) {
+        int x = (i % 2) * viewportWidth;
+        int y = (i / 2) * viewportHeight;
+        glViewport(x, y, viewportWidth, viewportHeight);
 
-    // Weiße Figuren
-    for (int i = 0; i < 8; i++) {
-        if (i == 4 && isAnimating) {
+        mat4 View = lookAt(viewpoints[i], vec3(0.5, 0.5, 0.5), vec3(0.0, 1.0, 0.0));
+        mat4 Projection = projections[i];
+        mat4 Model = mat4(1.0f);
+
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &View[0][0]);
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &Projection[0][0]);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+        glUniform3fv(glGetUniformLocation(program, "viewPos"), 1, &viewpoints[i][0]);
+
+        drawBoard();
+        drawCheckerboard();
+
+        // WeiÃŸe Figuren
+        for (int i = 0; i < 8; i++) {
+            if (i == 4 && isAnimating) {
+                Model = mat4(1.0f);
+                Model = translate(Model, currentPos);
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+                drawChessPiece(WHITE_PIECE_ID);
+            }
+            else {
+                Model = mat4(1.0f);
+                Model = translate(Model, getChessboardPosition(1, i));
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+                drawChessPiece(WHITE_PIECE_ID);
+            }
+
             Model = mat4(1.0f);
-            Model = translate(Model, currentPos);
+            Model = translate(Model, getChessboardPosition(0, i));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-            drawChessPiece(WHITE_PIECE_ID);
+            drawConePiece(WHITE_PIECE_ID);
         }
-        else {
+
+        // Schwarze Figuren
+        for (int i = 0; i < 8; i++) {
             Model = mat4(1.0f);
-            Model = translate(Model, getChessboardPosition(1, i));
+            Model = translate(Model, getChessboardPosition(6, i));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-            drawChessPiece(WHITE_PIECE_ID);
+            drawChessPiece(BLACK_PIECE_ID);
+
+            Model = mat4(1.0f);
+            Model = translate(Model, getChessboardPosition(7, i));
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
+            drawConePiece(BLACK_PIECE_ID);
         }
-
-        Model = mat4(1.0f);
-        Model = translate(Model, getChessboardPosition(0, i));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawConePiece(WHITE_PIECE_ID);
-    }
-
-    // Schwarze Figuren
-    for (int i = 0; i < 8; i++) {
-        Model = mat4(1.0f);
-        Model = translate(Model, getChessboardPosition(6, i));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawChessPiece(BLACK_PIECE_ID);
-
-        Model = mat4(1.0f);
-        Model = translate(Model, getChessboardPosition(7, i));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Model[0][0]);
-        drawConePiece(BLACK_PIECE_ID);
-    }
-
+    }    
 
     glutSwapBuffers();
 }
@@ -572,7 +584,7 @@ void keyboard(unsigned char theKey, int mouseX, int mouseY) {
     case 'v': dist -= DELTA; display(); break; //reinzoomen
     case 'z': dist += DELTA; display(); break; //rauszoomen
     case 't': isTiefenPuffer = !isTiefenPuffer; break; //Tiefenpuffer anscahalten
-    case 'c': isCullFace = !isCullFace; break; //Rückseitenentfernung
+    case 'c': isCullFace = !isCullFace; break; //RÃ¼ckseitenentfernung
     case 'a': if (!isAnimating) { // Animation starten
         isAnimating = true;
         movingForward = true;
@@ -617,7 +629,7 @@ void motion(int mouseX, int mouseY) {
 void reshape(int w, int h) {
     width = w;
     height = h;
-    //Zusätzlich tiefenpuffer
+    //ZusÃ¤tzlich tiefenpuffer
     glViewport(0, 0, width, height);
     glClear(GL_STENCIL_BUFFER_BIT);
     glStencilFunc(GL_ALWAYS, 0x1, 0x1);
@@ -643,7 +655,7 @@ void timer(int value) { //Nutzung anstatt idle Funktion
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL); //ergänzen beim Tiefenpuffer
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL); //ergÃ¤nzen beim Tiefenpuffer
     glutInitWindowSize(512, 512);
     glutInitContextVersion(4, 5);  // (4,2) (3,3);
     glutInitContextProfile(GLUT_CORE_PROFILE); //GLUT_COMPATIBILITY_PROFILE

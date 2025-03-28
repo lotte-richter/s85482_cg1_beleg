@@ -45,8 +45,6 @@ void main(void) {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 primaryLightResult = diffuse + specular;
-
     // Spotlight-Berechnung    
     float spotlightIntensity = 2.0f;
     vec3 spotlightLightDir = normalize(spotlightDir);
@@ -65,12 +63,9 @@ void main(void) {
     float spotlightSpec = pow(max(dot(viewDir, spotlightReflectDir), 0.0), 32.0);
     vec3 spotlightSpecular = specularStrength * spotlightSpec * spotlightColor;
 
-    vec3 spotlightResult = (spotlightDiffuse + spotlightSpecular) * spotlightIntensityFactor * spotlightIntensity;
 
-    // External light source ??
+    vec3 lightResult = diffuse + ambient + specular + (spotlightDiffuse + spotlightSpecular) * spotlightIntensityFactor * spotlightIntensity;
 
-    vec3 lightResult = ambient + primaryLightResult + spotlightResult; // + externalLightResult
-    
     vec4 texColor;
 
     if(objectId == 0){
@@ -83,6 +78,5 @@ void main(void) {
         texColor = texture(texBlack, texCoord);
     }
 
-    // fColor = texColor;
     fColor = texColor * vec4(lightResult, 1.0f);
 }
