@@ -526,6 +526,7 @@ void display() {
         int x = (i % 2) * viewportWidth;
         int y = (i / 2) * viewportHeight;
         glViewport(x, y, viewportWidth, viewportHeight);
+        /*glViewport(0, 0, width, height);*/
 
         mat4 View = lookAt(viewpoints[i], vec3(0.5, 0.5, 0.5), vec3(0.0, 1.0, 0.0));
         mat4 Projection = projections[i];

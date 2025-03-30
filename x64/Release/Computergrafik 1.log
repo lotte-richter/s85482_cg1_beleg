@@ -66,10 +66,10 @@ C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(159,17):
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(159,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(160,12): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(160,24): warning C4305: 'initializing': truncation from 'double' to 'const GLfloat'
-C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(624,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
 C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(625,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\lotte\source\repos\Computergrafik 1\Computergrafik 1\Beleg.cpp(626,39): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
   Generating code
-  1 of 338 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  6 of 338 functions ( 1.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
