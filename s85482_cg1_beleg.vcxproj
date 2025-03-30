@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{706b2982-1ad0-4dba-8d24-e171b6854264}</ProjectGuid>
-    <RootNamespace>Computergrafik1</RootNamespace>
+    <ProjectGuid>{c404d117-342f-4d60-9d9e-7d1f333de31a}</ProjectGuid>
+    <RootNamespace>s85482cg1beleg</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,13 +104,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\lotte\cg1\OpenGL\OpenGL\glew-2.1.0\include\GL;C:\Users\lotte\cg1\OpenGL\OpenGL\freeglut-3.0.0\include\GL;C:\Users\lotte\cg1\OpenGL\OpenGL\glm-0.9.9.6\glm;C:\Users\lotte\cg1\OpenGL\OpenGL\FreeImage3180Win32Win64\Dist\x64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\lotte\cg1\OpenGL\OpenGL\glew-2.1.0\lib\Release\x64;C:\Users\lotte\cg1\OpenGL\OpenGL\FreeImage3180Win32Win64\Dist\x64;C:\Users\lotte\cg1\OpenGL\OpenGL\freeglut-3.0.0\lib\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut.lib;glew32.lib;FreeImage.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,14 +130,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Beleg.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Programme\LoadShader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Programme\beleg.fs" />
     <None Include="Programme\beleg.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Beleg.cpp" />
+    <ClCompile Include="Programme\LoadShader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
